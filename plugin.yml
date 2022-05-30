@@ -1,0 +1,12 @@
+name: horserace
+version: 0.1
+api-version: 1.18
+main: de.letsduck.horserace.main.Main
+
+commands:
+   spawnhorse:
+      description: spawn a horse
+   horserace:
+      description: horserace stuff
+   clear-config:
+      description: clear all tracks from config
