@@ -20,7 +20,7 @@ public class HorseraceCommand implements CommandExecutor {
 		
 		if(args.length < 1) {
 			if(!(sender instanceof Player)) {
-				sender.sendMessage("§cYou gotta be a player to use this command!");
+				sender.sendMessage("§cNur Spieler können diesen Befehl nutzen");
 				return true;
 			}
 			Player p = (Player) sender;
@@ -36,7 +36,7 @@ public class HorseraceCommand implements CommandExecutor {
 		if(COMMANDS.containsKey(args[0]))
 			return COMMANDS.get(args[0]).onCommand(sender, command, label, args);
 		
-		sender.sendMessage("§cUnknown option: §6" + args[0]);
+		sender.sendMessage("§cUnbekannte Option: §6" + args[0]);
 		
 		return false;
 	}

@@ -11,9 +11,9 @@ import de.letsduck.horserace.util.ItemBuilder;
 import de.letsduck.horserace.util.gui.HorseraceGUI;
 
 public class DeleteAction extends Action {
-	private static final ItemStack 	SUBMIT = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§aSubmit").getItem(),
-			CANCEL = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).name("§cCancel").getItem();
-	private static final String SUBMIT_INV_TITLE = "§cAre you sure to delete?";
+	private static final ItemStack 	SUBMIT = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§aLöschen").getItem(),
+			CANCEL = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).name("§cAbbruch").getItem();
+	private static final String SUBMIT_INV_TITLE = "§cStrecke löschen?";
 
 	public DeleteAction(Player player) {
 		super(player);
@@ -30,7 +30,7 @@ public class DeleteAction extends Action {
 			final var track = Main.raceTracks.get(player);
 			track.delete();
 			
-			player.sendMessage("§6§lTrack deleted");
+			player.sendMessage("§6§lStrecke gelöscht");
 			player.closeInventory();
 			return;
 		}

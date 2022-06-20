@@ -14,16 +14,16 @@ public class DeleteRacetrackCommand implements CommandExecutor {
 			return true;
 
 		if (args.length != 2) {
-			sender.sendMessage("§cPlease use §6/horserace delete <id>§c!");
+			sender.sendMessage("§cBitte nutze §6/horserace delete <id>§c!");
 			return true;
 		}
 
 		if (Main.getPlugin().getConfig().contains("RaceTracks." + args[1])) {
 			Main.getPlugin().getConfig().set("RaceTracks." + args[1], null);
-			sender.sendMessage("§aTrack deleted!");
+			sender.sendMessage("§aStrecke gelöscht");
 			return false;
 		}
-		sender.sendMessage("§6This track doesn't exist!");
+		sender.sendMessage("§6Strecke nicht gefunden");
 
 		return false;
 	}

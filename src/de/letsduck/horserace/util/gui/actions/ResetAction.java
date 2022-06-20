@@ -12,9 +12,9 @@ import de.letsduck.horserace.util.ItemBuilder;
 import de.letsduck.horserace.util.gui.HorseraceGUI;
 
 public class ResetAction extends Action {
-	private static final ItemStack 	SUBMIT = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§aSubmit").getItem(),
-									CANCEL = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).name("§cCancel").getItem();
-	private static final String SUBMIT_INV_TITLE = "§6Are you sure to reset?";
+	private static final ItemStack 	SUBMIT = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§aZurücksetzen").getItem(),
+									CANCEL = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).name("§cAbbrechen").getItem();
+	private static final String SUBMIT_INV_TITLE = "§6Strecke zurücksetzen?";
 
 	public ResetAction(Player player) {
 		super(player);
@@ -30,7 +30,7 @@ public class ResetAction extends Action {
 		if(name.equals(HorseraceGUI.getDisplayName(SUBMIT))) {
 			final var track = Main.raceTracks.get(player);
 			track.reset();
-			player.sendMessage("§6§lTrack reset");
+			player.sendMessage("§6§lStrecke zurückgesetzt");
 			player.closeInventory();
 			return;
 		}

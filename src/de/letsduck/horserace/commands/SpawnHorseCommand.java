@@ -14,7 +14,7 @@ public class SpawnHorseCommand implements CommandExecutor {
 		if(!CommandUtil.checkPermission(sender, "Horserace.spawn", true)) return true;
 		
 		Player p = (Player) sender;
-		Main.spawnHorse(p, 7);
+		Main.spawnHorse(p, Main.DEFAULT_SPEED);
 		
 		return false;
 	}

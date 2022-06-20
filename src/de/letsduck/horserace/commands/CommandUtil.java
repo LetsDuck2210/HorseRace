@@ -11,12 +11,12 @@ import de.letsduck.horserace.util.RaceTrack;
 public class CommandUtil {
 	public static boolean checkPermission(CommandSender sender, String permission, boolean checkIsPlayer) {
 		if(!sender.hasPermission("HorseRace.spawnhorse")) {
-			sender.sendMessage("§cYou don't have the required Permissions to use this command!");
+			sender.sendMessage("§cDu hast keine Rechte diesen Befehl zu nutzen");
 			return false;
 		}
 		if(checkIsPlayer)
 			if(!(sender instanceof Player)) {
-				sender.sendMessage("§cYou gotta be a player to use this command!");
+				sender.sendMessage("§cNur Spieler können diesen Befehl nutzen");
 				return false;
 			}
 		
@@ -31,7 +31,7 @@ public class CommandUtil {
 					trackReference.set(track);
 			});
 			if(trackReference.get() == null)
-				p.sendMessage("§cYou haven't created a race track yet! Create one with §2/horserace-create§a!");
+				p.sendMessage("§cDu hast noch keine Strecke (/horserace)");
 		} else
 			trackReference.set(Main.raceTracks.get(p));
 		

@@ -1,12 +1,15 @@
 package de.letsduck.horserace.util.gui.actions;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import de.letsduck.horserace.main.Main;
+import de.letsduck.horserace.util.RaceTrack;
 
 public class StartAction extends Action {
+	private static final int START_COOLDOWN = 1;
 
 	public StartAction(Player player) {
 		super(player);
@@ -18,7 +21,13 @@ public class StartAction extends Action {
 			return;
 
 		var track = Main.raceTracks.get(player);
-
+		RaceTrack.queuedTracks.put(track.getID(), track);
+		Bukkit.broadcastMessage("§2" + track.getID() + " startet in " + START_COOLDOWN + " minuten. (/horserace join " + track.getID() + ")");
+		
+		Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {
+			track.setup();
+			track.start();
+		}, /*START_COOLDOWN * */30 * 20); // 2 min
 	}
 
 }

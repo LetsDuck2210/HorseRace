@@ -36,7 +36,7 @@ public class HorseraceBuilderListener implements Listener {
 		if(name.equals(RecipeBuilder.FINISH_LINE_BLACK) || name.equals(RecipeBuilder.FINISH_LINE_WHITE)) {
 			RaceTrack track = CommandUtil.checkTrack(p);
 			if(track == null) {
-				p.sendMessage("§cTrack is null");
+				p.sendMessage("§cStrecke hat keinen ");
 				return;
 			}
 			
@@ -44,7 +44,6 @@ public class HorseraceBuilderListener implements Listener {
 			Color c;
 			if(name.endsWith("BLACK")) c = Color.BLACK;
 			else c = Color.WHITE;
-			Main.info("joa ehhh finish line block und so");
 			blockPlaced.getWorld().spawnParticle(Particle.REDSTONE, blockPlaced.getLocation().add(0.5, 0.5, 0.5), 2, new Particle.DustOptions(c, 2));
 		}
 		else if(name.startsWith(RecipeBuilder.FLAG) && !name.equals(RecipeBuilder.FLAG)) {
@@ -54,7 +53,7 @@ public class HorseraceBuilderListener implements Listener {
 			var finishLine = track.getFinishLine();
 			int flagNum = Integer.parseInt(name.substring(RecipeBuilder.FLAG.length() + 1));
 			if(flagNum >= finishLine.getFlags().size()) {
-				p.sendMessage("§cPlease select a Flag first!");
+				p.sendMessage("§cBitte wähle erst eine Flagge");
 				return;
 			}
 
@@ -97,6 +96,8 @@ public class HorseraceBuilderListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
+	public static final String CHOOSE_FLAG_TITLE = "§6Wähle eine Flagge";
+	
 	@EventHandler
 	public void onPlayerSelectFlag(PlayerInteractEvent event) {
 		Player p = event.getPlayer();
@@ -110,7 +111,7 @@ public class HorseraceBuilderListener implements Listener {
 		RaceTrack track = CommandUtil.checkTrack(p);
 		if(track == null) return;
 		
-		Inventory select = Bukkit.createInventory(p, 9 * 5, "§6Select Flag");
+		Inventory select = Bukkit.createInventory(p, 9 * 5, CHOOSE_FLAG_TITLE);
 		int flagCount = track.getFinishLine().getFlags().size();
 		for(int i = 0; i < flagCount && i < 9 * 5; i++) {
 			select.addItem(new ItemBuilder(Material.ORANGE_WOOL).name(RecipeBuilder.FLAG + " " + i).getItem());
@@ -119,13 +120,13 @@ public class HorseraceBuilderListener implements Listener {
 		p.openInventory(select);
 	}
 	@EventHandler
-	public void onPlayerSelectFlagFromInventory(InventoryClickEvent event) {		
+	public void onPlayerSelectFlagFromInventory(InventoryClickEvent event) {
 		if(!(event.getWhoClicked() instanceof Player)) return;
 		
 		Player p = (Player) event.getWhoClicked();
 		
 		String title = event.getView().getTitle();
-		if(!title.equals("§6Select Flag")) return;
+		if(!title.equals(CHOOSE_FLAG_TITLE)) return;
 		
 		ItemStack item = event.getCurrentItem();
 		event.setCancelled(false);

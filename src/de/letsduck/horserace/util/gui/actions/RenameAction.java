@@ -22,20 +22,20 @@ public class RenameAction extends Action {
 		final var timeout = 20;
 		final var track = Main.raceTracks.get(player);
 		
-		player.sendMessage("§a§lType new name in chat, you have " + timeout + " seconds...");
+		player.sendMessage("§a§lSchreibe den neuen Name in den Chat innerhalb von " + timeout + " sekunden...");
 		player.closeInventory();
 		ChatHandler.register(player, (message) -> {
 			player.sendMessage("§2" + message);
 			if(track.setID(message))
-				player.sendMessage("§a§lTrack renamed");
+				player.sendMessage("§a§lStrecke umbenannt");
 			else
-				player.sendMessage("§c§lThis name already exists");
+				player.sendMessage("§c§lDieser name existiert bereits");
 			
 			return true;
 		});
 		Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getPlugin(), () -> {
 			if(ChatHandler.remove(player) != null)
-				player.sendMessage("§c§lTook too long, rename cancelled");
+				player.sendMessage("§c§lZu lange gebraucht, umbenennen abgebrochen");
 		}, timeout * 20);
 	}
 }

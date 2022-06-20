@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
@@ -17,6 +19,8 @@ import de.letsduck.horserace.main.Main;
 import de.letsduck.horserace.util.gui.actions.LapHandlerAction;
 
 public class RaceTrack {
+	public static Map<String, RaceTrack> queuedTracks = new HashMap<>();
+	
 	// serialization required:
 	private List<Location> startPoints;
 	private FinishLine finishLine;
@@ -26,12 +30,15 @@ public class RaceTrack {
 	
 	// no serialization required:
 	private int taskID;
-	private List<Horse> competing;
+	private List<Horse> competingHorses;
+	private List<Player> competingPlayers;
+	private int initialCompeting;
 	public HashMap<Horse, Integer> passedFlags;
 	
 	public RaceTrack(int laps) {
 		finishLine = new FinishLine();
-		competing = new ArrayList<>();
+		competingHorses = new ArrayList<>();
+		competingPlayers = new ArrayList<>();
 		passedFlags = new HashMap<>();
 		startPoints = new ArrayList<>();
 		builders = new ArrayList<>();
@@ -47,9 +54,11 @@ public class RaceTrack {
 			horses.forEach((horse) -> horse.getPassengers().forEach((entity) -> entity.sendMessage("§cNot enough start points!")));
 			return;
 		}
-		
-		competing.clear();
-		competing.addAll(horses);
+		if(horses != competingHorses) {
+			competingHorses.clear();
+			competingHorses.addAll(horses);
+		}
+		initialCompeting = horses.size();
 		
 		for(int i = 0; i < horses.size(); i++) {
 			var passengers = horses.get(i).getPassengers();
@@ -73,7 +82,6 @@ public class RaceTrack {
 		}
 		y /= i;
 		HorseRideListener.yBase = y;
-		System.out.println(y);
 	}
 	public List<Player> getBuilders() {
 		return builders;
@@ -85,9 +93,71 @@ public class RaceTrack {
 	public void removeBuilder(Player p) {
 		builders.remove(p);
 	}
+	public boolean addCompetingPlayer(Player p) {
+		if(competingPlayers.size() < startPoints.size()
+				&& !competingPlayers.contains(p)) {
+			competingPlayers.add(p);
+			return true;
+		}
+		return false;
+	}
+	public void removeCompetingPlayer(Player p) {
+		competingPlayers.remove(p);
+	}
+	private int countdownTask = 0;
+	public void setup() {
+		competingPlayers.forEach(p -> {
+			Horse h;
+			// check if not riding horse, if so, spawn one
+			if(!p.isInsideVehicle() || !(p.getVehicle() instanceof Horse)) {
+				h = Main.spawnHorse(p, Main.DEFAULT_SPEED);
+			} else
+				h = (Horse) p.getVehicle();
+			
+			Main.info("" + h);
+			competingHorses.add(h);
+		});
+		Main.isEnabled = !Main.isEnabled;
+		if(Main.isEnabled) {
+			
+			spawn(competingHorses);
+			
+			final AtomicInteger countdown = new AtomicInteger(3);
+			if(getCompeting().size() < 1) {
+				Main.isEnabled = false;
+				return;
+			}
+			final double speed = getCompeting().get(0).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+			getCompeting().forEach((horse) -> horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0));
+			countdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), () -> {
+				if(countdown.get() > 0) {
+					if(countdown.get() == 3)
+						Bukkit.getOnlinePlayers().forEach((player) -> player.sendTitle("§a3", "", 5, 20, 5));
+					else if(countdown.get() == 2)
+						Bukkit.getOnlinePlayers().forEach((player) -> player.sendTitle("§62", "", 5, 20, 5));
+					else if(countdown.get() == 1)
+						Bukkit.getOnlinePlayers().forEach((player) -> player.sendTitle("§c1", "", 5, 20, 5));
+					
+					countdown.getAndDecrement();
+					return;
+				}
+				
+				start();
+				Bukkit.getScheduler().cancelTask(countdownTask);
+				countdownTask = 0;
+				getCompeting().forEach((horse) -> {
+					horse.getPassengers().forEach((entity) -> {
+						if(entity instanceof Player player)
+							player.sendTitle("§aRunde 1", "§20.0s", 5, 20, 5);
+					});
+					horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
+				});
+			}, 20, 20);
+		}
+	}
 	public int start() {
-		taskID = finishLine.start(competing);
-		return taskID;
+		queuedTracks.remove(getID());
+		return taskID = finishLine.start(competingHorses);
 	}
 	public int getLaps() {
 		return laps;
@@ -98,8 +168,11 @@ public class RaceTrack {
 	public List<Location> getStartPoints() {
 		return startPoints;
 	}
+	public int getInitialCompeting() {
+		return initialCompeting;
+	}
 	public List<Horse> getCompeting() {
-		return competing;
+		return competingHorses;
 	}
 	public FinishLine getFinishLine() {
 		return finishLine;
@@ -132,7 +205,7 @@ public class RaceTrack {
 		builders.add(owner); // owner must remain
 		
 		laps = 0;
-		competing.clear();
+		competingHorses.clear();
 		passedFlags.clear();
 	}
 	// deletes all resources associated to this track

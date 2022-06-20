@@ -20,6 +20,7 @@ import de.letsduck.horserace.commands.HorseraceBuildCommand;
 import de.letsduck.horserace.commands.HorseraceCommand;
 import de.letsduck.horserace.commands.HorseraceCreateCommand;
 import de.letsduck.horserace.commands.HorseraceTabCompleter;
+import de.letsduck.horserace.commands.JoinHorseraceCommand;
 import de.letsduck.horserace.commands.LookupRacetrackCommand;
 import de.letsduck.horserace.commands.SpawnHorseCommand;
 import de.letsduck.horserace.commands.ToggleHorseraceCommand;
@@ -31,6 +32,7 @@ import de.letsduck.horserace.util.RecipeBuilder;
 
 public class Main extends JavaPlugin {
 	public static boolean isEnabled;
+	public static final float DEFAULT_SPEED = 7;
 	public static final double SPEED_CHANGE = 0.01;
 	public static final String HORSE_NAME = "Racehorse";
 	
@@ -57,6 +59,7 @@ public class Main extends JavaPlugin {
 		HorseraceCommand.COMMANDS.put("lookup", new LookupRacetrackCommand());
 		HorseraceCommand.COMMANDS.put("toggle", new ToggleHorseraceCommand());
 		HorseraceCommand.COMMANDS.put("delete", new DeleteRacetrackCommand());
+		HorseraceCommand.COMMANDS.put("join", new JoinHorseraceCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		manager.registerEvents(new HorseRideListener(), this);
@@ -100,10 +103,10 @@ public class Main extends JavaPlugin {
 	}
 	
 	// spawn horse with default stats
-	public static void spawnHorse(Player p, float speed) {
+	public static Horse spawnHorse(Player p, float speed) {
 		if(speed < 0 || speed > 10) {
-			p.sendMessage("§cYour horse could not be spawned with that speed!");
-			return;
+			p.sendMessage("§cUngültige geschwindigkeit " + speed);
+			return null;
 		}
 		
 		Horse horse = (Horse) p.getWorld().spawnEntity(p.getLocation(), EntityType.HORSE);
@@ -116,10 +119,11 @@ public class Main extends JavaPlugin {
 		horse.setInvulnerable(true);
 		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed / 35.0);
 		horse.setCustomName(HORSE_NAME);
+		return horse;
 	}
 	public static boolean checkPlayerHasTrack(Player p) {
 		if(!Main.raceTracks.containsKey(p)) {
-			p.sendMessage("§cYou haven't created a race track yet! Create one with §2/horserace-create§a!");
+			p.sendMessage("§cDu hast noch keine Strecke (/horserace)");
 			return false;
 		}
 		return true;

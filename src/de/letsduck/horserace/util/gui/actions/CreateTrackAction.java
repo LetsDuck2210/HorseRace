@@ -20,7 +20,7 @@ public class CreateTrackAction extends Action {
 		track.save();
 		Main.getPlugin().saveConfig();
 		Main.raceTracks.put(player, track);
-		player.sendMessage("§aRacetrack created: §2" + track.getID());
+		player.sendMessage("§aRennstrecke erstellt: §2" + track.getID());
 		player.closeInventory();
 	}
 }

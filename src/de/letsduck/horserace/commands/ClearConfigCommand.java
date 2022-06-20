@@ -14,7 +14,7 @@ public class ClearConfigCommand implements CommandExecutor {
 		
 		Main.getPlugin().getConfig().set("RaceTracks", null);
 		Main.getPlugin().saveConfig();
-		sender.sendMessage("§2Config has been cleared!");
+		sender.sendMessage("§2Config wurde geleert");
 		
 		return false;
 	}

@@ -14,18 +14,18 @@ public class LookupRacetrackCommand implements CommandExecutor {
 		if(!CommandUtil.checkPermission(sender, "Horserace.lookup", true)) return true;
 		
 		if(args.length != 2) {
-			sender.sendMessage("§cPlease use §6/horserace lookup <id>§c!");
+			sender.sendMessage("§cBitte nutze §6/horserace lookup <id>§c!");
 			return true;
 		}
 		
 		Player p = (Player) sender;
 		if(Main.loadedTracks.containsKey(args[1])) {
-			p.sendMessage("§aYour track was found!");
+			p.sendMessage("§aStrecke geladen");
 			Main.raceTracks.put(p, Main.loadedTracks.get(args[1]));
 			return false;
 		}
 		
-		p.sendMessage("§cYour track was not found!");
+		p.sendMessage("§cStrecke nicht gefunden");
 		return false;
 	}
 }

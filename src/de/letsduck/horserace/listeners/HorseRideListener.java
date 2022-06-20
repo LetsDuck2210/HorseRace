@@ -96,13 +96,13 @@ public class HorseRideListener implements Listener {
 				int ticks = finishLine.getStopWatch().round(horse);
 				
 				int round = finishLine.getStopWatch().getTimes(horse).size();
-				event.getPlayer().sendTitle("§aRound " + round, "§2" + (ticks / 20.0) + "s", 5, 20, 5);
+				event.getPlayer().sendTitle("§aRunde " + round, "§2" + (ticks / 20.0) + "s", 5, 20, 5);
 				
 				if(round >= track.getLaps()) {
 					int ticksTotal = 0;
 					for(int time : finishLine.getStopWatch().getTimes(horse))
 						ticksTotal += time;
-					event.getPlayer().sendTitle("§aFinished " + addEnding(track.getCompeting().size() - track.getCompeting().size() + 1) + " place", "§2" + (ticksTotal / 20.0) + "s", 5, 20, 5);
+					event.getPlayer().sendTitle("§a" + (track.getInitialCompeting() - track.getCompeting().size() + 1) + ". Platz", "§2" + (ticksTotal / 20.0) + "s", 5, 20, 5);
 					Main.raceTrackOfHorse.remove(horse);
 					
 					track.getCompeting().remove(horse);
@@ -115,16 +115,5 @@ public class HorseRideListener implements Listener {
 			
 			track.passedFlags.put(horse, 0);
 		}
-	}
-	
-	private String addEnding(int amount) {
-		if(amount % 10 == 1)
-			return amount + "st";
-		if(amount % 10 == 2)
-			return amount + "nd";
-		if(amount % 10 == 3)
-			return amount + "rd";
-		
-		return amount + "th";
 	}
 }

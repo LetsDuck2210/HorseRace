@@ -32,23 +32,23 @@ public class HorseraceGUI implements Listener {
 	private static final HashMap<Player, HorseraceGUI> GUIS = new HashMap<>();
 	
 	// items for edit-inventory
-	public static final ItemStack BUILDERS = new ItemBuilder(Material.PLAYER_HEAD).name("§abuilders").getItem(),
-								  RESET = new ItemBuilder(Material.PAPER).name("§6reset").getItem(),
-								  LAPS = new ItemBuilder(Material.IRON_HORSE_ARMOR).name(ChatColor.GREEN + "laps").setLore(new ArrayList<>()).getItem(),
-								  START = new ItemBuilder(Material.FIREWORK_ROCKET).name(ChatColor.BLUE + "start").getItem(),
-								  DELETE = new ItemBuilder(Material.LAVA_BUCKET).name("§cdelete").getItem(),
-								  RENAME = new ItemBuilder(Material.NAME_TAG).name("§arename").getItem(),
-								  SAVE = new ItemBuilder(Material.BOOK).name("§asave").getItem();
+	public static final ItemStack BUILDERS = new ItemBuilder(Material.PLAYER_HEAD).name("§aMitbauer").getItem(),
+								  RESET = new ItemBuilder(Material.PAPER).name("§6Zurücksetzen").getItem(),
+								  LAPS = new ItemBuilder(Material.IRON_HORSE_ARMOR).name(ChatColor.GREEN + "Runden").setLore(new ArrayList<>()).getItem(),
+								  START = new ItemBuilder(Material.FIREWORK_ROCKET).name(ChatColor.BLUE + "Start").getItem(),
+								  DELETE = new ItemBuilder(Material.LAVA_BUCKET).name("§cLöschen").getItem(),
+								  RENAME = new ItemBuilder(Material.NAME_TAG).name("§aUmbenennen").getItem(),
+								  SAVE = new ItemBuilder(Material.BOOK).name("§aSpeichern").getItem();
 	
 	// items for create-inventory
-	public static final ItemStack CREATE = new ItemBuilder(Material.IRON_HORSE_ARMOR).name("§aCreate").setLore(new ArrayList<>()).getItem(),
-								  LAPS_INC_1 = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§2Increase Laps by 1").getItem(),
-								  LAPS_DEC_1 = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).name("§6Decrease Laps by 1").getItem(),
-								  LAPS_INC_10 = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§2Increase Laps by 10").getItem(),
-								  LAPS_DEC_10 = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).name("§6Decrease Laps by 10").getItem();
+	public static final ItemStack CREATE = new ItemBuilder(Material.IRON_HORSE_ARMOR).name("§aErstellen").setLore(new ArrayList<>()).getItem(),
+								  LAPS_INC_1 = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§2Runden erhöhen um 1").getItem(),
+								  LAPS_DEC_1 = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).name("§6Runden verringern um 1").getItem(),
+								  LAPS_INC_10 = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§2Runden erhöhen um 10").getItem(),
+								  LAPS_DEC_10 = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).name("§6Runden verringern um 10").getItem();
 	
-	public static final String SETTINGS_TITLE = ChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "Horserace";
-	public static final String CREATE_TRACK_TITLE = ChatColor.DARK_PURPLE + "Create Track";
+	public static final String SETTINGS_TITLE = ChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "Strecke";
+	public static final String CREATE_TRACK_TITLE = ChatColor.DARK_PURPLE + "Strecke erstellen";
 	private final Player p;
 	private final HashMap<String, Action> actions;
 	private final HashMap<String, Inventory> inventories;
@@ -64,6 +64,7 @@ public class HorseraceGUI implements Listener {
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		LAPS.setItemMeta(meta);
 		var settings = Bukkit.createInventory(p, 9 * 3, SETTINGS_TITLE);
+		inventories.put(SETTINGS_TITLE, settings);
 		item(settings, 2, BUILDERS, new BuildersAction(p));
 		item(settings, 6, RESET, new ResetAction(p));
 		item(settings, 10, LAPS, new ChangeLapsAction(p));
@@ -74,31 +75,33 @@ public class HorseraceGUI implements Listener {
 
 		meta = CREATE.getItemMeta();
 		var lore = new ArrayList<String>();
-		lore.add("§r§fLaps: 0");
+		lore.add("§r§fRunden: 0");
 		meta.setLore(lore);
 		CREATE.setItemMeta(meta);
 		
 		// inventory to create a track
 		var create = Bukkit.createInventory(p, 9 * 3, CREATE_TRACK_TITLE);
-		Action lapHandler = LapHandlerAction.getFor(p, CREATE);
-		
-		// no invName required here because it's already been registered
-		item(create, 9, LAPS_DEC_10, lapHandler);
-		item(create, 11, LAPS_DEC_1, lapHandler);
-		item(create, 13, CREATE, new CreateTrackAction(p));
-		item(create, 15, LAPS_INC_1, lapHandler);
-		item(create, 17, LAPS_INC_10, lapHandler);
-		
-		inventories.put(SETTINGS_TITLE, settings);
 		inventories.put(CREATE_TRACK_TITLE, create);
+		
+		makeCreateInventory();
+		item(create, 13, CREATE, new CreateTrackAction(p));
 		
 		Bukkit.getPluginManager().registerEvents(this, Main.getPlugin());
 	}
+	public void makeCreateInventory() {
+		Action lapHandler = LapHandlerAction.getFor(p, CREATE);
+		var create = inventories.get(CREATE_TRACK_TITLE); 
+		item(create, 9, LAPS_DEC_10, lapHandler);
+		item(create, 11, LAPS_DEC_1, lapHandler);
+		item(create, 15, LAPS_INC_1, lapHandler);
+		item(create, 17, LAPS_INC_10, lapHandler);
+	}
+	
 	// get inventory by name and update item-lores 
 	public Inventory get(String name) {
 		if(Main.raceTracks.containsKey(p)) {
 			var meta = LAPS.getItemMeta();
-			meta.setLore(List.of("§r§fLaps: " + Main.raceTracks.get(p).getLaps()));
+			meta.setLore(List.of("§r§fRunden: " + Main.raceTracks.get(p).getLaps()));
 		}
 		return inventories.get(name);
 	}

@@ -55,11 +55,11 @@ public class RecipeBuilder {
 		}
 	}
 	
-	public static final String FINISH_LINE_BLACK = ChatColor.DARK_GRAY + "Finish Line",
-							   FINISH_LINE_WHITE = ChatColor.WHITE + "Finish Line",
-							   FLAG = ChatColor.GOLD + "Flag",
-							   STARTING_POINT = ChatColor.BLUE + "Starting Point",
-							   BREAKER = ChatColor.RED + "Break";
+	public static final String FINISH_LINE_BLACK = ChatColor.DARK_GRAY + "Ziellinie",
+							   FINISH_LINE_WHITE = ChatColor.WHITE + "Ziellinie",
+							   FLAG = ChatColor.GOLD + "Flagge",
+							   STARTING_POINT = ChatColor.BLUE + "Startpunkt",
+							   BREAKER = ChatColor.RED + "Entfernen";
 	public static void build() {
 		ItemStack[] items = new ItemStack[] {
 			new ItemBuilder(Material.BLACK_WOOL)

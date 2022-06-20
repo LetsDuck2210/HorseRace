@@ -14,8 +14,8 @@ import de.letsduck.horserace.util.ItemBuilder;
 import de.letsduck.horserace.util.gui.HorseraceGUI;
 
 public class ChangeLapsAction extends Action {
-	public static final ItemStack SUBMIT = new ItemBuilder(Material.IRON_HORSE_ARMOR).name("§aSubmit").getItem();
-	public static final String CHANGE_LAPS_TITLE = ChatColor.DARK_PURPLE + "Change Laps";
+	public static final ItemStack SUBMIT = new ItemBuilder(Material.IRON_HORSE_ARMOR).name("§aFertig").getItem();
+	public static final String CHANGE_LAPS_TITLE = ChatColor.DARK_PURPLE + "Rundenzahl ändern";
 	private Inventory changeLaps;
 	
 	public ChangeLapsAction(Player player) {
@@ -31,13 +31,13 @@ public class ChangeLapsAction extends Action {
 		// updates the tracks laps when SUBMIT is clicked
 		if(name.equals(HorseraceGUI.getDisplayName(SUBMIT))) {
 			track.setLaps(LapHandlerAction.getFor(player, SUBMIT).getLaps());
-			player.sendMessage("§aLaps changed!");
+			player.sendMessage("§aRundenzahl geändert");
 			player.openInventory(HorseraceGUI.getFor(player).get(HorseraceGUI.SETTINGS_TITLE));
 			return;
 		} else if(name.equals(HorseraceGUI.getDisplayName(HorseraceGUI.LAPS))) {
 			// initialy set lore of submit-item
 			var meta = SUBMIT.getItemMeta();
-			meta.setLore(List.of("§r§fLaps: " + track.getLaps()));
+			meta.setLore(List.of("§r§fRunden: " + track.getLaps()));
 			SUBMIT.setItemMeta(meta);
 			
 			changeLaps = Bukkit.createInventory(player, 9 * 3, CHANGE_LAPS_TITLE);

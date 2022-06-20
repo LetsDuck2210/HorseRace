@@ -26,10 +26,10 @@ public class LapHandlerAction extends Action {
 
 	@Override
 	public void clicked(Inventory inv, ItemStack item, String name) {
-		if(name.startsWith("§2Increase Laps by "))
-			laps += Integer.parseInt(name.substring(19));
-		else if(name.startsWith("§6Decrease Laps by "))
-			laps -= Integer.parseInt(name.substring(19));
+		if(name.startsWith("§2Runden erhöhen um "))
+			laps += Integer.parseInt(name.substring(20));
+		else if(name.startsWith("§6Runden verringern um "))
+			laps -= Integer.parseInt(name.substring(23));
 		
 		// search the referenced item in the given inventory
 		AtomicReference<ItemStack> itemRef = new AtomicReference<>();
@@ -41,9 +41,9 @@ public class LapHandlerAction extends Action {
 				itemRef.set(itm);
 		});
 		
-		// update display name of parsed item
+		// update display name of the searched item
 		var meta = itemRef.get().getItemMeta();
-		meta.setLore(List.of("§r§fLaps: " + laps));
+		meta.setLore(List.of("§r§fRunden: " + laps));
 		itemRef.get().setItemMeta(meta);
 	}
 	public int getLaps() {
@@ -65,6 +65,12 @@ public class LapHandlerAction extends Action {
 		return handlers.get(p);
 	}
 	public static void delete(Player p) {
+		var handler = handlers.get(p);
+		
+		var meta = handler.item.getItemMeta();
+		meta.setLore(List.of("§r§fRunden: 0"));
+		handler.item.setItemMeta(meta);
 		handlers.remove(p);
+		HorseraceGUI.getFor(p).makeCreateInventory();
 	}
 }
