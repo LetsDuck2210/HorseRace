@@ -9,7 +9,7 @@ import de.letsduck.horserace.main.Main;
 import de.letsduck.horserace.util.RaceTrack;
 
 public class StartAction extends Action {
-	private static final int START_COOLDOWN = 1;
+	private static final int START_COOLDOWN = 2;
 
 	public StartAction(Player player) {
 		super(player);
@@ -27,7 +27,7 @@ public class StartAction extends Action {
 		Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {
 			track.setup();
 			track.start();
-		}, /*START_COOLDOWN * */30 * 20); // 2 min
+		}, START_COOLDOWN * 60 * 20); // 2 min
 	}
 
 }
