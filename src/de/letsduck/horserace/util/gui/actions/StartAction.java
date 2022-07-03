@@ -23,6 +23,7 @@ public class StartAction extends Action {
 		var track = Main.raceTracks.get(player);
 		RaceTrack.queuedTracks.put(track.getID(), track);
 		Bukkit.broadcastMessage("§2" + track.getID() + " startet in " + START_COOLDOWN + " minuten. (/horserace join " + track.getID() + ")");
+		track.addCompetingPlayer(player);
 		
 		Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {
 			track.setup();
