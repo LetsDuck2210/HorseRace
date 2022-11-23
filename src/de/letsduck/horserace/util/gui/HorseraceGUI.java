@@ -27,25 +27,26 @@ import de.letsduck.horserace.util.gui.actions.RenameAction;
 import de.letsduck.horserace.util.gui.actions.ResetAction;
 import de.letsduck.horserace.util.gui.actions.SaveAction;
 import de.letsduck.horserace.util.gui.actions.StartAction;
+import net.kyori.adventure.text.Component;
 
 public class HorseraceGUI implements Listener {
 	private static final HashMap<Player, HorseraceGUI> GUIS = new HashMap<>();
 	
 	// items for edit-inventory
-	public static final ItemStack BUILDERS = new ItemBuilder(Material.PLAYER_HEAD).name("§aMitbauer").getItem(),
-								  RESET = new ItemBuilder(Material.PAPER).name("§6Zurücksetzen").getItem(),
+	public static final ItemStack BUILDERS = new ItemBuilder(Material.PLAYER_HEAD).name("Â§aMitbauer").getItem(),
+								  RESET = new ItemBuilder(Material.PAPER).name("Â§6ZurÃ¼cksetzen").getItem(),
 								  LAPS = new ItemBuilder(Material.IRON_HORSE_ARMOR).name(ChatColor.GREEN + "Runden").setLore(new ArrayList<>()).getItem(),
 								  START = new ItemBuilder(Material.FIREWORK_ROCKET).name(ChatColor.BLUE + "Start").getItem(),
-								  DELETE = new ItemBuilder(Material.LAVA_BUCKET).name("§cLöschen").getItem(),
-								  RENAME = new ItemBuilder(Material.NAME_TAG).name("§aUmbenennen").getItem(),
-								  SAVE = new ItemBuilder(Material.BOOK).name("§aSpeichern").getItem();
+								  DELETE = new ItemBuilder(Material.LAVA_BUCKET).name("Â§cLÃ¶schen").getItem(),
+								  RENAME = new ItemBuilder(Material.NAME_TAG).name("Â§aUmbenennen").getItem(),
+								  SAVE = new ItemBuilder(Material.BOOK).name("Â§aSpeichern").getItem();
 	
 	// items for create-inventory
-	public static final ItemStack CREATE = new ItemBuilder(Material.IRON_HORSE_ARMOR).name("§aErstellen").setLore(new ArrayList<>()).getItem(),
-								  LAPS_INC_1 = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§2Runden erhöhen um 1").getItem(),
-								  LAPS_DEC_1 = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).name("§6Runden verringern um 1").getItem(),
-								  LAPS_INC_10 = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§2Runden erhöhen um 10").getItem(),
-								  LAPS_DEC_10 = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).name("§6Runden verringern um 10").getItem();
+	public static final ItemStack CREATE = new ItemBuilder(Material.IRON_HORSE_ARMOR).name("Â§aErstellen").setLore(new ArrayList<>()).getItem(),
+								  LAPS_INC_1 = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("Â§2Runden erhÃ¶hen um 1").getItem(),
+								  LAPS_DEC_1 = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).name("Â§6Runden verringern um 1").getItem(),
+								  LAPS_INC_10 = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("Â§2Runden erhÃ¶hen um 10").getItem(),
+								  LAPS_DEC_10 = new ItemBuilder(Material.ORANGE_STAINED_GLASS_PANE).name("Â§6Runden verringern um 10").getItem();
 	
 	public static final String SETTINGS_TITLE = ChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "Strecke";
 	public static final String CREATE_TRACK_TITLE = ChatColor.DARK_PURPLE + "Strecke erstellen";
@@ -63,7 +64,7 @@ public class HorseraceGUI implements Listener {
 		var meta = LAPS.getItemMeta();
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		LAPS.setItemMeta(meta);
-		var settings = Bukkit.createInventory(p, 9 * 3, SETTINGS_TITLE);
+		var settings = Bukkit.createInventory(p, 9 * 3, Component.text(SETTINGS_TITLE));
 		inventories.put(SETTINGS_TITLE, settings);
 		item(settings, 2, BUILDERS, new BuildersAction(p));
 		item(settings, 6, RESET, new ResetAction(p));
@@ -74,13 +75,13 @@ public class HorseraceGUI implements Listener {
 		item(settings, 24, SAVE, new SaveAction(p));
 
 		meta = CREATE.getItemMeta();
-		var lore = new ArrayList<String>();
-		lore.add("§r§fRunden: 0");
-		meta.setLore(lore);
+		var lore = new ArrayList<Component>();
+		lore.add(Component.text("ï¿½rï¿½fRunden: 0"));
+		meta.lore(lore);
 		CREATE.setItemMeta(meta);
 		
 		// inventory to create a track
-		var create = Bukkit.createInventory(p, 9 * 3, CREATE_TRACK_TITLE);
+		var create = Bukkit.createInventory(p, 9 * 3, Component.text(CREATE_TRACK_TITLE));
 		inventories.put(CREATE_TRACK_TITLE, create);
 		
 		makeCreateInventory();
@@ -101,7 +102,7 @@ public class HorseraceGUI implements Listener {
 	public Inventory get(String name) {
 		if(Main.raceTracks.containsKey(p)) {
 			var meta = LAPS.getItemMeta();
-			meta.setLore(List.of("§r§fRunden: " + Main.raceTracks.get(p).getLaps()));
+			meta.lore(List.of(Component.text("Â§rÂ§fRunden: " + Main.raceTracks.get(p).getLaps())));
 		}
 		return inventories.get(name);
 	}
@@ -126,10 +127,10 @@ public class HorseraceGUI implements Listener {
 		String name = getDisplayName(item);
 		if(name == null) return;
 		
-		if(inventories.containsKey(event.getView().getTitle())) {
+		if(inventories.containsKey(event.getView().title().examinableName())) {
 			event.setCancelled(true);
 			if(actions.containsKey(name)) {
-				actions.get(name).clicked(inventories.get(event.getView().getTitle()), item, name);
+				actions.get(name).clicked(inventories.get(event.getView().title().examinableName()), item, name);
 			}
 		}
 	}
@@ -147,7 +148,7 @@ public class HorseraceGUI implements Listener {
 		String name;
 		if((name = getDisplayName(event.getCurrentItem())) == null) return;
 		
-		final String title = event.getView().getTitle();
+		final String title = event.getView().title().examinableName();
 		if(handles.containsKey(title)) {
 			handles.get(title).clicked(event.getInventory(), event.getCurrentItem(), name);
 			event.setCancelled(true);
@@ -165,7 +166,7 @@ public class HorseraceGUI implements Listener {
 		if(!item.hasItemMeta()) return null;
 		if(!item.getItemMeta().hasDisplayName()) return null;
 		
-		return item.getItemMeta().getDisplayName();
+		return item.getItemMeta().displayName().examinableName();
 	}
 	
 	

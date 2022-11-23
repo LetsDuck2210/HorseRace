@@ -29,6 +29,7 @@ import de.letsduck.horserace.listeners.HorseRideListener;
 import de.letsduck.horserace.listeners.HorseraceBuilderListener;
 import de.letsduck.horserace.util.RaceTrack;
 import de.letsduck.horserace.util.RecipeBuilder;
+import net.kyori.adventure.text.Component;
 
 public class Main extends JavaPlugin {
 	public static boolean isEnabled;
@@ -105,7 +106,7 @@ public class Main extends JavaPlugin {
 	// spawn horse with default stats
 	public static Horse spawnHorse(Player p, float speed) {
 		if(speed < 0 || speed > 10) {
-			p.sendMessage("§cUngültige geschwindigkeit " + speed);
+			p.sendMessage("ï¿½cUngï¿½ltige geschwindigkeit " + speed);
 			return null;
 		}
 		
@@ -118,12 +119,12 @@ public class Main extends JavaPlugin {
 		horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 		horse.setInvulnerable(true);
 		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed / 35.0);
-		horse.setCustomName(HORSE_NAME);
+		horse.customName(Component.text(HORSE_NAME));
 		return horse;
 	}
 	public static boolean checkPlayerHasTrack(Player p) {
 		if(!Main.raceTracks.containsKey(p)) {
-			p.sendMessage("§cDu hast noch keine Strecke (/horserace)");
+			p.sendMessage("ï¿½cDu hast noch keine Strecke (/horserace)");
 			return false;
 		}
 		return true;

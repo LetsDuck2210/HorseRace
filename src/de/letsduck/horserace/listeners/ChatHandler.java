@@ -6,7 +6,8 @@ import java.util.function.Function;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import io.papermc.paper.event.player.AsyncChatEvent;
 
 // register a listener to watch out for a message from a player and optionally cancel the event
 public class ChatHandler implements Listener {
@@ -20,10 +21,10 @@ public class ChatHandler implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerChat(AsyncPlayerChatEvent event) {
+	public void onPlayerChat(AsyncChatEvent event) {
 		var p = event.getPlayer();
 		if(handles.containsKey(p)) {
-			event.setCancelled(handles.get(p).apply(event.getMessage()));
+			event.setCancelled(handles.get(p).apply(event.message().examinableName())); // TODO (examinableName)
 			handles.remove(p);
 		}
 	}

@@ -23,6 +23,7 @@ import de.letsduck.horserace.util.ItemBuilder;
 import de.letsduck.horserace.util.RaceTrack;
 import de.letsduck.horserace.util.RecipeBuilder;
 import de.letsduck.horserace.util.gui.HorseraceGUI;
+import net.kyori.adventure.text.Component;
 
 public class HorseraceBuilderListener implements Listener {
 	@EventHandler
@@ -36,7 +37,7 @@ public class HorseraceBuilderListener implements Listener {
 		if(name.equals(RecipeBuilder.FINISH_LINE_BLACK) || name.equals(RecipeBuilder.FINISH_LINE_WHITE)) {
 			RaceTrack track = CommandUtil.checkTrack(p);
 			if(track == null) {
-				p.sendMessage("§cStrecke hat keinen ");
+				p.sendMessage("ï¿½cStrecke hat keinen ");
 				return;
 			}
 			
@@ -53,7 +54,7 @@ public class HorseraceBuilderListener implements Listener {
 			var finishLine = track.getFinishLine();
 			int flagNum = Integer.parseInt(name.substring(RecipeBuilder.FLAG.length() + 1));
 			if(flagNum >= finishLine.getFlags().size()) {
-				p.sendMessage("§cBitte wähle erst eine Flagge");
+				p.sendMessage("ï¿½cBitte wï¿½hle erst eine Flagge");
 				return;
 			}
 
@@ -96,7 +97,7 @@ public class HorseraceBuilderListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	public static final String CHOOSE_FLAG_TITLE = "§6Wähle eine Flagge";
+	public static final String CHOOSE_FLAG_TITLE = "ï¿½6Wï¿½hle eine Flagge";
 	
 	@EventHandler
 	public void onPlayerSelectFlag(PlayerInteractEvent event) {
@@ -106,12 +107,12 @@ public class HorseraceBuilderListener implements Listener {
 		if(item == null) return;
 		if(!item.hasItemMeta()) return;
 		if(!item.getItemMeta().hasDisplayName()) return;
-		if(!item.getItemMeta().getDisplayName().startsWith(RecipeBuilder.FLAG)) return;
+		if(!item.getItemMeta().displayName().toString().startsWith(RecipeBuilder.FLAG)) return;
 		
 		RaceTrack track = CommandUtil.checkTrack(p);
 		if(track == null) return;
 		
-		Inventory select = Bukkit.createInventory(p, 9 * 5, CHOOSE_FLAG_TITLE);
+		Inventory select = Bukkit.createInventory(p, 9 * 5, Component.text(CHOOSE_FLAG_TITLE)); // TODO (Component.text)
 		int flagCount = track.getFinishLine().getFlags().size();
 		for(int i = 0; i < flagCount && i < 9 * 5; i++) {
 			select.addItem(new ItemBuilder(Material.ORANGE_WOOL).name(RecipeBuilder.FLAG + " " + i).getItem());
@@ -125,7 +126,7 @@ public class HorseraceBuilderListener implements Listener {
 		
 		Player p = (Player) event.getWhoClicked();
 		
-		String title = event.getView().getTitle();
+		String title = event.getView().title().toString();
 		if(!title.equals(CHOOSE_FLAG_TITLE)) return;
 		
 		ItemStack item = event.getCurrentItem();
@@ -134,13 +135,13 @@ public class HorseraceBuilderListener implements Listener {
 		if(item == null) return;
 		if(!item.hasItemMeta()) return;
 		if(!item.getItemMeta().hasDisplayName()) return;
-		if(!item.getItemMeta().getDisplayName().startsWith(RecipeBuilder.FLAG)) return;
+		if(!item.getItemMeta().displayName().examinableName().startsWith(RecipeBuilder.FLAG)) return; // TODO (examinableName)
 		
 		p.closeInventory();
 		
 		ItemStack hand = p.getInventory().getItemInMainHand();
 		var meta = hand.getItemMeta();
-		meta.setDisplayName(item.getItemMeta().getDisplayName());
+		meta.displayName(item.getItemMeta().displayName());
 		hand.setItemMeta(meta);
 		
 		if(item.getType() == Material.RED_WOOL) {
@@ -160,7 +161,7 @@ public class HorseraceBuilderListener implements Listener {
 		if(item == null) return;
 		if(!item.hasItemMeta()) return;
 		if(!item.getItemMeta().hasDisplayName()) return;
-		if(!item.getItemMeta().getDisplayName().equals(RecipeBuilder.BREAKER)) return;
+		if(!item.getItemMeta().displayName().examinableName().equals(RecipeBuilder.BREAKER)) return; // TODO (examinableName)
 		
 		RaceTrack track = CommandUtil.checkTrack(p);
 		if(track == null) return;
@@ -173,7 +174,7 @@ public class HorseraceBuilderListener implements Listener {
 			if(hand == null) return;
 			if(!hand.hasItemMeta()) return;
 			if(!hand.getItemMeta().hasDisplayName()) return;
-			if(!hand.getItemMeta().getDisplayName().equals(RecipeBuilder.BREAKER)) {
+			if(!hand.getItemMeta().displayName().examinableName().equals(RecipeBuilder.BREAKER)) { // TODO (examinableName)
 				Bukkit.getScheduler().cancelTask(taskShowBlocks);
 				taskShowBlocks = 0;
 				return;

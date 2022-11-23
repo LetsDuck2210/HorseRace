@@ -1,5 +1,6 @@
 package de.letsduck.horserace.util;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,9 @@ import org.bukkit.entity.Player;
 import de.letsduck.horserace.listeners.HorseRideListener;
 import de.letsduck.horserace.main.Main;
 import de.letsduck.horserace.util.gui.actions.LapHandlerAction;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
+import net.kyori.adventure.title.Title.Times;
 
 public class RaceTrack {
 	public static Map<String, RaceTrack> queuedTracks = new HashMap<>();
@@ -51,7 +55,7 @@ public class RaceTrack {
 	}
 	public void spawn(List<Horse> horses) {
 		if(horses.size() > startPoints.size()) {
-			horses.forEach((horse) -> horse.getPassengers().forEach((entity) -> entity.sendMessage("§cNot enough start points!")));
+			horses.forEach((horse) -> horse.getPassengers().forEach((entity) -> entity.sendMessage("ï¿½cNot enough start points!")));
 			return;
 		}
 		if(horses != competingHorses) {
@@ -63,10 +67,10 @@ public class RaceTrack {
 		for(int i = 0; i < horses.size(); i++) {
 			var passengers = horses.get(i).getPassengers();
 			
-			horses.get(i).setCustomName("teleporting...");
+			horses.get(i).customName(Component.text("teleporting..."));
 			horses.get(i).eject();
 			horses.get(i).teleport(startPoints.get(i).clone().add(0.5, 0, 0.5));
-			horses.get(i).setCustomName(Main.HORSE_NAME);
+			horses.get(i).customName(Component.text(Main.HORSE_NAME));
 			
 			final int j = i;
 			Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {
@@ -132,11 +136,11 @@ public class RaceTrack {
 			countdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), () -> {
 				if(countdown.get() > 0) {
 					if(countdown.get() == 3)
-						Bukkit.getOnlinePlayers().forEach((player) -> player.sendTitle("§a3", "", 5, 20, 5));
+						Bukkit.getOnlinePlayers().forEach((player) -> player.showTitle(title("Â§a3", "", 5, 20, 5)));
 					else if(countdown.get() == 2)
-						Bukkit.getOnlinePlayers().forEach((player) -> player.sendTitle("§62", "", 5, 20, 5));
+						Bukkit.getOnlinePlayers().forEach((player) -> player.showTitle(title("Â§62", "", 5, 20, 5)));
 					else if(countdown.get() == 1)
-						Bukkit.getOnlinePlayers().forEach((player) -> player.sendTitle("§c1", "", 5, 20, 5));
+						Bukkit.getOnlinePlayers().forEach((player) -> player.showTitle(title("Â§c1", "", 5, 20, 5)));
 					
 					countdown.getAndDecrement();
 					return;
@@ -148,7 +152,7 @@ public class RaceTrack {
 				getCompeting().forEach((horse) -> {
 					horse.getPassengers().forEach((entity) -> {
 						if(entity instanceof Player player)
-							player.sendTitle("§aRunde 1", "§20.0s", 5, 20, 5);
+							player.showTitle(title("Â§aRunde 1", "ï¿½20.0s", 5, 20, 5));
 					});
 					horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
 				});
@@ -251,6 +255,18 @@ public class RaceTrack {
 		}
 		
 		return tracks;
+	}
+	
+	private static Title title(String title, String subt, int fadeIn, int stay, int fadeOut) {
+		return Title.title(
+			Component.text(title),
+			Component.text(subt),
+			Times.times(
+				Duration.ofMillis(Math.round(fadeIn * 50)),
+				Duration.ofMillis(Math.round(stay * 50)),
+				Duration.ofMillis(Math.round(fadeOut * 50))
+			)
+		);
 	}
 	
 	@Override

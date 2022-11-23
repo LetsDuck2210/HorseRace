@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import de.letsduck.horserace.main.Main;
 import de.letsduck.horserace.util.RaceTrack;
+import net.kyori.adventure.text.Component;
 
 public class StartAction extends Action {
 	private static final int START_COOLDOWN = 2;
@@ -22,7 +23,7 @@ public class StartAction extends Action {
 
 		var track = Main.raceTracks.get(player);
 		RaceTrack.queuedTracks.put(track.getID(), track);
-		Bukkit.broadcastMessage("§2" + track.getID() + " startet in " + START_COOLDOWN + " minuten. (/horserace join " + track.getID() + ")");
+		Bukkit.broadcast(Component.text("ï¿½2" + track.getID() + " startet in " + START_COOLDOWN + " minuten. (/horserace join " + track.getID() + ")")); // TODO (component.text)
 		track.addCompetingPlayer(player);
 		
 		Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {

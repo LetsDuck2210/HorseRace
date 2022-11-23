@@ -27,15 +27,16 @@ public class ToggleHorseraceCommand implements CommandExecutor {
 	
 	public boolean checkOnHorse(Player p) {
 		if(p.getVehicle() == null) {
-			p.sendMessage("§cGet on your horse!");
+			p.sendMessage("ï¿½cGet on your horse!");
 			return false;
 		}
 		if(!(p.getVehicle() instanceof Horse)) {
-			p.sendMessage("§cGet on your horse!");
+			p.sendMessage("ï¿½cGet on your horse!");
 			return false;
 		}
-		if(!p.getVehicle().getCustomName().equals("Racehorse")) {
-			p.sendMessage("§cGet on your racehorse!");
+		
+		if(!p.getVehicle().customName().toString().equals("Racehorse")) {
+			p.sendMessage("ï¿½cGet on your racehorse!");
 			return false;
 		}
 		return true;

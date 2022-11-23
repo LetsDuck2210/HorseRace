@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import de.letsduck.horserace.main.Main;
 import de.letsduck.horserace.util.gui.HorseraceGUI;
+import net.kyori.adventure.text.Component;
 
 public class LapHandlerAction extends Action {
 	private static HashMap<Player, LapHandlerAction> handlers = new HashMap<>();
@@ -26,9 +27,9 @@ public class LapHandlerAction extends Action {
 
 	@Override
 	public void clicked(Inventory inv, ItemStack item, String name) {
-		if(name.startsWith("§2Runden erhöhen um "))
+		if(name.startsWith("ï¿½2Runden erhï¿½hen um "))
 			laps += Integer.parseInt(name.substring(20));
-		else if(name.startsWith("§6Runden verringern um "))
+		else if(name.startsWith("ï¿½6Runden verringern um "))
 			laps -= Integer.parseInt(name.substring(23));
 		
 		// search the referenced item in the given inventory
@@ -43,7 +44,7 @@ public class LapHandlerAction extends Action {
 		
 		// update display name of the searched item
 		var meta = itemRef.get().getItemMeta();
-		meta.setLore(List.of("§r§fRunden: " + laps));
+		meta.lore(List.of(Component.text("ï¿½rï¿½fRunden: " + laps)));
 		itemRef.get().setItemMeta(meta);
 	}
 	public int getLaps() {
@@ -68,7 +69,7 @@ public class LapHandlerAction extends Action {
 		var handler = handlers.get(p);
 		
 		var meta = handler.item.getItemMeta();
-		meta.setLore(List.of("§r§fRunden: 0"));
+		meta.lore(List.of(Component.text("Â§rÂ§fRunden: 0")));
 		handler.item.setItemMeta(meta);
 		handlers.remove(p);
 		HorseraceGUI.getFor(p).makeCreateInventory();

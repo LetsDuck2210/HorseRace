@@ -10,11 +10,12 @@ import org.bukkit.inventory.ItemStack;
 import de.letsduck.horserace.main.Main;
 import de.letsduck.horserace.util.ItemBuilder;
 import de.letsduck.horserace.util.gui.HorseraceGUI;
+import net.kyori.adventure.text.Component;
 
 public class ResetAction extends Action {
-	private static final ItemStack 	SUBMIT = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§aZurücksetzen").getItem(),
-									CANCEL = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).name("§cAbbrechen").getItem();
-	private static final String SUBMIT_INV_TITLE = "§6Strecke zurücksetzen?";
+	private static final ItemStack 	SUBMIT = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("Â§aZurÃ¼cksetzen").getItem(),
+									CANCEL = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).name("Â§cAbbrechen").getItem();
+	private static final String SUBMIT_INV_TITLE = "Â§6Strecke zurÃ¼cksetzen?";
 
 	public ResetAction(Player player) {
 		super(player);
@@ -30,7 +31,7 @@ public class ResetAction extends Action {
 		if(name.equals(HorseraceGUI.getDisplayName(SUBMIT))) {
 			final var track = Main.raceTracks.get(player);
 			track.reset();
-			player.sendMessage("§6§lStrecke zurückgesetzt");
+			player.sendMessage("Â§6Â§lStrecke zurÃ¼ckgesetzt");
 			player.closeInventory();
 			return;
 		}
@@ -39,7 +40,7 @@ public class ResetAction extends Action {
 			return;
 		}
 		
-		final Inventory submitInv = Bukkit.createInventory(player, 9 * 1, SUBMIT_INV_TITLE);
+		final Inventory submitInv = Bukkit.createInventory(player, 9 * 1, Component.text(SUBMIT_INV_TITLE));
 		gui.item(submitInv, 3, CANCEL, null);
 		gui.item(submitInv, 5, SUBMIT, null);
 		gui.handle(SUBMIT_INV_TITLE, this);

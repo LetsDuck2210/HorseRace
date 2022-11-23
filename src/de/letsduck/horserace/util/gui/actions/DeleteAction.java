@@ -9,11 +9,12 @@ import org.bukkit.inventory.ItemStack;
 import de.letsduck.horserace.main.Main;
 import de.letsduck.horserace.util.ItemBuilder;
 import de.letsduck.horserace.util.gui.HorseraceGUI;
+import net.kyori.adventure.text.Component;
 
 public class DeleteAction extends Action {
-	private static final ItemStack 	SUBMIT = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("§aLöschen").getItem(),
-			CANCEL = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).name("§cAbbruch").getItem();
-	private static final String SUBMIT_INV_TITLE = "§cStrecke löschen?";
+	private static final ItemStack 	SUBMIT = new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE).name("Â§aLÃ¶schen").getItem(),
+			CANCEL = new ItemBuilder(Material.RED_STAINED_GLASS_PANE).name("Â§cAbbruch").getItem();
+	private static final String SUBMIT_INV_TITLE = "Â§cStrecke lï¿½schen?";
 
 	public DeleteAction(Player player) {
 		super(player);
@@ -30,7 +31,7 @@ public class DeleteAction extends Action {
 			final var track = Main.raceTracks.get(player);
 			track.delete();
 			
-			player.sendMessage("§6§lStrecke gelöscht");
+			player.sendMessage("Â§6Â§lStrecke gelÃ¶scht");
 			player.closeInventory();
 			return;
 		}
@@ -39,7 +40,7 @@ public class DeleteAction extends Action {
 			return;
 		}
 		
-		final Inventory submitInv = Bukkit.createInventory(player, 9 * 1, SUBMIT_INV_TITLE);
+		final Inventory submitInv = Bukkit.createInventory(player, 9 * 1, Component.text(SUBMIT_INV_TITLE));
 		gui.item(submitInv, 3, CANCEL, null);
 		gui.item(submitInv, 5, SUBMIT, null);
 		gui.handle(SUBMIT_INV_TITLE, this);

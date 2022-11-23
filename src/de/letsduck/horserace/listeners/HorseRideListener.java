@@ -1,5 +1,7 @@
 package de.letsduck.horserace.listeners;
 
+import java.time.Duration;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.EventHandler;
@@ -8,6 +10,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 
 import de.letsduck.horserace.main.Main;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
+import net.kyori.adventure.title.Title.Times;
 
 public class HorseRideListener implements Listener {
 	public static int yBase;
@@ -20,7 +25,7 @@ public class HorseRideListener implements Listener {
 		
 		Horse horse = (Horse) event.getVehicle();
 		
-		if(!horse.getCustomName().equals(Main.HORSE_NAME)) return;
+		if(!horse.customName().examinableName().equals(Main.HORSE_NAME)) return; // TODO (examinableName)
 		
 		event.setCancelled(true);
 	}
@@ -34,7 +39,7 @@ public class HorseRideListener implements Listener {
 		
 		Horse horse = (Horse) event.getPlayer().getVehicle();
 		
-		if(!horse.getCustomName().equals(Main.HORSE_NAME)) return;
+		if(!horse.customName().examinableName().equals(Main.HORSE_NAME)) return; // TODO (examinableName)
 		
 		if(!Main.raceTrackOfHorse.containsKey(horse)) return;
 		
@@ -57,13 +62,45 @@ public class HorseRideListener implements Listener {
 				int ticks = finishLine.getStopWatch().round(horse);
 				
 				int round = finishLine.getStopWatch().getTimes(horse).size();
-				event.getPlayer().sendTitle("§aRunde " + round, "§2" + (ticks / 20.0) + "s", 5, 20, 5);
+				event // TODO (title)
+					.getPlayer()
+					.showTitle(
+						Title.title(
+							Component.text(
+								"Â§aRunde " + round
+							),
+							Component.text(
+								"Â§2" + (ticks / 20.0) + "s"
+							),
+							Times.times(
+								Duration.ofMillis(250),
+								Duration.ofSeconds(1),
+								Duration.ofMillis(250)
+							)
+						)
+					);
+//				event.getPlayer().sendTitle("ï¿½aRunde " + round, "ï¿½2" + (ticks / 20.0) + "s", 5, 20, 5);
 				
 				if(round >= track.getLaps()) {
 					int ticksTotal = 0;
 					for(int time : finishLine.getStopWatch().getTimes(horse))
 						ticksTotal += time;
-					event.getPlayer().sendTitle("§a" + (track.getInitialCompeting() - track.getCompeting().size() + 1) + ". Platz", "§2" + (ticksTotal / 20.0) + "s", 5, 20, 5);
+					event // TODO (title)
+						.getPlayer()
+						.showTitle(
+							Title.title(
+								Component.text(
+									"Â§a" + (track.getInitialCompeting() - track.getCompeting().size()) + ". Platz"
+								), 
+								Component.text("Â§2" + (ticksTotal / 20.0) + "s"),
+								Times.times(
+									Duration.ofMillis(250), 
+									Duration.ofSeconds(1), 
+									Duration.ofMillis(250)
+								)
+							)
+						); 
+//					event.getPlayer().sendTitle("ï¿½a" + (track.getInitialCompeting() - track.getCompeting().size() + 1) + ". Platz", "ï¿½2" + (ticksTotal / 20.0) + "s", 5, 20, 5); 
 					Main.raceTrackOfHorse.remove(horse);
 					
 					track.getCompeting().remove(horse);
