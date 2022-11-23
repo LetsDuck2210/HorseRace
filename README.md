@@ -15,4 +15,4 @@
 	
 - spawnhorse \- erschaffe ein Rennpferd
 
-- clear-config \- l�scht alle Rennstrecken aus der config, mit Vorsicht geniesen
+- clear-config \- löscht alle Rennstrecken aus der config, mit Vorsicht genießen
